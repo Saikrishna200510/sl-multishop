@@ -1,0 +1,39 @@
+{
+    # Global options
+    email info@slit-solutions.com
+    admin off
+}
+
+# Production domain configuration or localhost for dev/preview
+:80, :443 {
+    encode gzip zstd
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' http: https:;"
+    }
+
+    # API endpoints routed to Node.js backend
+    handle /api/* {
+        reverse_proxy backend:5000 {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Swagger Documentation
+    handle /api-docs* {
+        reverse_proxy backend:5000
+    }
+
+    # Frontend Single Page Application (React)
+    handle {
+        reverse_proxy frontend:80
+    }
+}

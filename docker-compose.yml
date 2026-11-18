@@ -1,0 +1,80 @@
+services:
+  caddy:
+    image: caddy:2.9-alpine
+    container_name: sl_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - sl_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../deploy/frontend.Dockerfile
+    container_name: sl_frontend
+    restart: unless-stopped
+    environment:
+      - VITE_API_BASE_URL=/api/v1
+    networks:
+      - sl_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../deploy/backend.Dockerfile
+    container_name: sl_backend
+    restart: unless-stopped
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-sl_multishop}?schema=public
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:-sl_multishop_super_secret_access_jwt_key_production_grade_32_chars_min}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-sl_multishop_super_secret_refresh_jwt_key_production_grade_32_chars_min}
+      - JWT_ACCESS_EXPIRES_IN=15m
+      - JWT_REFRESH_EXPIRES_IN=7d
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+      - SUPERADMIN_EMAIL=${SUPERADMIN_EMAIL:-admin@slit-solutions.com}
+      - SUPERADMIN_PASSWORD=${SUPERADMIN_PASSWORD:-SuperAdmin@2026!SL}
+      - ENABLE_SWAGGER=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sl_network
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: sl_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-sl_multishop}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/prisma/rls-setup.sql:/docker-entrypoint-initdb.d/99_rls.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sl_multishop}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sl_network
+
+networks:
+  sl_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:

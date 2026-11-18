@@ -1,0 +1,50 @@
+{
+  "app": {
+    "title": "SL MultiShop",
+    "branding": "A Product of SL IT SOLUTIONS",
+    "tagline": "Multi-Tenant SaaS Billing & POS Management Platform"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "pos": "POS Billing",
+    "products": "Products & Catalog",
+    "inventory": "Inventory & Stock",
+    "invoices": "Invoices & Sales",
+    "customers": "Customers",
+    "suppliers": "Suppliers & Purchases",
+    "expenses": "Expenses",
+    "reports": "Reports & Analytics",
+    "settings": "Settings",
+    "superAdmin": "Super Admin"
+  },
+  "pos": {
+    "searchPlaceholder": "Search by product name, SKU or scan barcode [F2]...",
+    "cart": "Shopping Cart",
+    "emptyCart": "Cart is currently empty. Scan a barcode or click a product to add.",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "tax": "GST Tax",
+    "roundOff": "Round Off",
+    "total": "Grand Total",
+    "payNow": "Complete Sale [F9]",
+    "cash": "Cash",
+    "upi": "UPI",
+    "card": "Card",
+    "split": "Split",
+    "credit": "Credit",
+    "customer": "Select Customer",
+    "printReceipt": "Print Receipt"
+  },
+  "common": {
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add New",
+    "search": "Search...",
+    "status": "Status",
+    "actions": "Actions",
+    "loading": "Loading...",
+    "logout": "Log Out"
+  }
+}

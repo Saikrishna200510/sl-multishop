@@ -1,0 +1,27 @@
+{
+  "name": "sl-multishop",
+  "version": "1.0.0",
+  "description": "SL MultiShop - Multi-Tenant Billing and POS SaaS Platform by SL IT SOLUTIONS",
+  "private": true,
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "test:backend": "cd backend && npm test",
+    "prisma:generate": "cd backend && npm run prisma:generate",
+    "prisma:seed": "cd backend && npm run prisma:seed",
+    "docker:up": "docker compose -f deploy/docker-compose.yml up -d --build",
+    "docker:down": "docker compose -f deploy/docker-compose.yml down"
+  },
+  "keywords": [
+    "saas",
+    "billing",
+    "pos",
+    "multi-tenant",
+    "retail",
+    "supermarket",
+    "sl-it-solutions"
+  ],
+  "author": "SL IT SOLUTIONS"
+}
