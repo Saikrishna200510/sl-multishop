@@ -1,13 +1,14 @@
 services:
   caddy:
-    image: caddy:2.9-alpine
+    build:
+      context: .
+      dockerfile: caddy.Dockerfile
     container_name: sl_caddy
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
@@ -41,7 +42,7 @@ services:
       - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-sl_multishop_super_secret_refresh_jwt_key_production_grade_32_chars_min}
       - JWT_ACCESS_EXPIRES_IN=15m
       - JWT_REFRESH_EXPIRES_IN=7d
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost,https://slmultishop.com}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
       - SUPERADMIN_EMAIL=${SUPERADMIN_EMAIL:-admin@slit-solutions.com}
       - SUPERADMIN_PASSWORD=${SUPERADMIN_PASSWORD:-SuperAdmin@2026!SL}
       - ENABLE_SWAGGER=true
@@ -61,7 +62,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-sl_multishop}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../backend/prisma/rls-setup.sql:/docker-entrypoint-initdb.d/99_rls.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sl_multishop}"]
       interval: 5s
