@@ -3,7 +3,6 @@ services:
     build:
       context: ./deploy
       dockerfile: caddy.Dockerfile
-    container_name: sl_caddy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -21,7 +20,6 @@ services:
     build:
       context: ./frontend
       dockerfile: ../deploy/frontend.Dockerfile
-    container_name: sl_frontend
     restart: unless-stopped
     environment:
       - VITE_API_BASE_URL=/api/v1
@@ -32,7 +30,6 @@ services:
     build:
       context: ./backend
       dockerfile: ../deploy/backend.Dockerfile
-    container_name: sl_backend
     restart: unless-stopped
     environment:
       - PORT=5000
@@ -54,7 +51,6 @@ services:
 
   postgres:
     image: postgres:17-alpine
-    container_name: sl_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
